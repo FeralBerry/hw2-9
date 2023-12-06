@@ -11,9 +11,9 @@ import java.util.TreeMap;
 public class EmployeeService {
     private final Map<String, Employee> employeesList = new TreeMap<>();
 
-    public String add(String firstName, String lastName,int departmentId,float salary) {
-        employeesList.put(new Employee(firstName,lastName).toKey(),new Employee(firstName,lastName,departmentId,salary));
-        return employeesList + "<br>";
+    public Map add(String firstName, String lastName,int departmentId,float salary) {
+        employeesList.put(new Employee(firstName,lastName).toKey(), new Employee(firstName,lastName,departmentId,salary));
+        return employeesList;
     }
     public String remove(String firstName, String lastName) {
         employeesList.remove(new Employee(firstName,lastName).toKey());
