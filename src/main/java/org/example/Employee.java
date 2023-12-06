@@ -18,13 +18,18 @@ public class Employee {
         salary = 0;
         departmentId = 0;
     }
-
+    public int getDepartment(){
+        return this.departmentId;
+    }
+    public float getSalary(){
+        return this.salary;
+    }
     public String toKey() {
         return "firstName: " + firstName + " lastName: " + lastName + " ";
     }
     @Override
     public String toString() {
-        return "departmentId: " + departmentId + " salary: " + salary;
+        return this.toKey() + "departmentId: " + departmentId + " salary: " + salary;
     }
     @Override
     public int hashCode() {
@@ -32,6 +37,9 @@ public class Employee {
     }
     @Override
     public boolean equals(Object other) {
+        if (other == null) {
+            return false;
+        }
         if (this.getClass() != other.getClass()) {
             return false;
         }

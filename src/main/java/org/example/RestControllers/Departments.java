@@ -14,18 +14,20 @@ public class Departments {
         this.departmentsService = departmentsService;
     }
     @GetMapping("/max-salary")
-    public float maxSalary(@RequestParam(name = "departmentId") int departmentId) {
+    public String maxSalary(@RequestParam(name = "departmentId") int departmentId) {
         return departmentsService.maxSalary(departmentId);
     }
     @GetMapping("/min-salary")
-    public float minSalary(@RequestParam(name = "departmentId") int departmentId) {
+    public String minSalary(@RequestParam(name = "departmentId") int departmentId) {
         return departmentsService.minSalary(departmentId);
     }
+
     @GetMapping(path = "/all")
-    public String all(@RequestParam(name = "departmentId",required = false) String departmentId) {
+    public String all(@RequestParam(name = "departmentId") String departmentId) {
         if(departmentId == null){
             return departmentsService.allDepartments();
         }
         return departmentsService.all(Integer.parseInt(departmentId));
     }
+
 }

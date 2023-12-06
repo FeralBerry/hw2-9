@@ -2,12 +2,10 @@ package org.example.Services;
 
 import org.springframework.stereotype.Service;
 
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-
-
+import java.util.concurrent.atomic.AtomicReference;
 
 @Service
 public class DepartmentsService {
@@ -17,56 +15,49 @@ public class DepartmentsService {
         this.employeeService = employeeService;
     }
 
-    public float maxSalary(int departmentId){
-        float max = 0;
-        String[] str;
-        float str_parse;
-        for(int i = 0; i < searchByDepartment(departmentId).size(); i++){
-            str = searchByDepartment(departmentId).toString().split("salary: ");
-            str_parse = Float.parseFloat(removeLastChar(str[1]));
-            if(str_parse > max){
-                max = str_parse;
+    public String maxSalary(int departmentId){
+        AtomicReference<Float> max = new AtomicReference<>((float) 0);
+        AtomicReference<String> keySearch = new AtomicReference<>("");
+        employeeService.getEmployees().forEach((key, value) -> {
+            if(value.getDepartment() == departmentId && value.getSalary() > max.get()){
+                keySearch.set(key);
             }
-        }
-        return max;
+        });
+        return findEmployee(employeeService.getEmployees(),keySearch.get()).toString();
     }
-    public float minSalary(int departmentId){
-        float min = Integer.MAX_VALUE;
-        String[] str;
-        float str_parse;
-        if(searchByDepartment(departmentId).size() > 0){
-            for(int i = 0; i < searchByDepartment(departmentId).size(); i++){
-                str = searchByDepartment(departmentId).toString().split("salary: ");
-                str_parse = Float.parseFloat(removeLastChar(str[1]));
-                if(str_parse < min){
-                    min = str_parse;
-                }
+    public String minSalary(int departmentId){
+        AtomicReference<Float> min = new AtomicReference<>((float) Integer.MAX_VALUE);
+        AtomicReference<String> keySearch = new AtomicReference<>("");
+        employeeService.getEmployees().forEach((key, value) -> {
+            if(value.getDepartment() == departmentId && value.getSalary() < min.get()){
+                keySearch.set(key);
             }
-            return min;
-        } else {
-            return 0;
-        }
+        });
+        return findEmployee(employeeService.getEmployees(),keySearch.get()).toString();
     }
-    public String all(int departmentId){
-        return searchByDepartment(departmentId).toString();
-    }
-    public String allDepartments(){
-        return searchByDepartment(0).toString();
-    }
-    private List searchByDepartment(int departmentId){
-        Map<String, String> map = employeeService.getEmployees();
-        List <String> employee = new ArrayList<>();
+    private List findEmployee(Map map, String keySearch){
+        List <Object> employee = new ArrayList<>();
         map.forEach((key, value) -> {
-            if(value.contains("departmentId: " + departmentId)){
-                employee.add(key + value);
-            }
-            if(departmentId == 0){
-                employee.add(key + value);
+            if(key.equals(keySearch)){
+                employee.add(value.toString());
             }
         });
         return employee;
     }
-    public String removeLastChar(String str) {
-        return str.substring(0, str.length() - 1);
+    public String all(int departmentId){
+        List <Object> employee = new ArrayList<>();
+        employeeService.getEmployees().forEach((key, value) -> {
+            if(value.getDepartment() == departmentId){
+                employee.add(value.toString());
+            }
+        });
+        return employee.toString();
+    }
+    public String allDepartments(){
+        List <Object> employee = new ArrayList<>();
+        employeeService.getEmployees().forEach((key, value) ->
+            employee.add(value.toString())
+        );
+        return employee.toString();
     }
 }
