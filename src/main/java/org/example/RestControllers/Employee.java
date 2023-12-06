@@ -16,20 +16,20 @@ public class Employee {
         this.employeeService = employeeService;
     }
     @GetMapping("/add")
-    public String add(@RequestParam(value = "firstName", required = false) String firstName,
-                      @RequestParam(value = "lastName", required = false) String lastName,
-                      @RequestParam(value = "departmentId", required = false) int departmentId,
-                      @RequestParam(value = "salary", required = false) float salary) {
+    public String add(@RequestParam(value = "firstName") String firstName,
+                      @RequestParam(value = "lastName") String lastName,
+                      @RequestParam(value = "departmentId") int departmentId,
+                      @RequestParam(value = "salary") float salary) {
         return employeeService.add(firstName,lastName,departmentId,salary);
     }
     @GetMapping("/remove")
-    public String remove(@RequestParam (value = "firstName", required = false) String firstName,
-                         @RequestParam(value = "lastName", required = false) String lastName) {
+    public String remove(@RequestParam (value = "firstName") String firstName,
+                         @RequestParam(value = "lastName") String lastName) {
         return employeeService.remove(firstName,lastName);
     }
     @GetMapping("/find")
-    public String find(@RequestParam (value = "firstName", required = false) String firstName,
-                       @RequestParam(value = "lastName", required = false) String lastName) {
+    public String find(@RequestParam (value = "firstName") String firstName,
+                       @RequestParam(value = "lastName") String lastName) {
         return employeeService.find(firstName,lastName);
     }
 }

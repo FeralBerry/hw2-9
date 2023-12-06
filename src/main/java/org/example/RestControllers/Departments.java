@@ -21,7 +21,6 @@ public class Departments {
     public String minSalary(@RequestParam(name = "departmentId") int departmentId) {
         return departmentsService.minSalary(departmentId);
     }
-
     @GetMapping(path = "/all")
     public String all(@RequestParam(name = "departmentId") String departmentId) {
         if(departmentId == null){
