@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.Map;
+import java.util.List;
 
 // @RestController - аннотация обработки GET запроса без возвращения HTML шаблона
 @RestController
@@ -18,20 +18,20 @@ public class Employee {
         this.employeeService = employeeService;
     }
     @GetMapping("/add")
-    public Map add(@RequestParam(value = "firstName") String firstName,
-                   @RequestParam(value = "lastName") String lastName,
-                   @RequestParam(value = "departmentId") int departmentId,
-                   @RequestParam(value = "salary") float salary) {
+    public List<Object> add(@RequestParam(value = "firstName") String firstName,
+                            @RequestParam(value = "lastName") String lastName,
+                            @RequestParam(value = "departmentId") int departmentId,
+                            @RequestParam(value = "salary") float salary) {
         return employeeService.add(firstName,lastName,departmentId,salary);
     }
     @GetMapping("/remove")
-    public String remove(@RequestParam (value = "firstName") String firstName,
+    public org.example.Employee remove(@RequestParam (value = "firstName") String firstName,
                          @RequestParam(value = "lastName") String lastName) {
         return employeeService.remove(firstName,lastName);
     }
     @GetMapping("/find")
-    public String find(@RequestParam (value = "firstName") String firstName,
-                       @RequestParam(value = "lastName") String lastName) {
+    public org.example.Employee find(@RequestParam (value = "firstName") String firstName,
+                                     @RequestParam(value = "lastName") String lastName) {
         return employeeService.find(firstName,lastName);
     }
 }

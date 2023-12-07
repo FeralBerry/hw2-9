@@ -3,7 +3,9 @@ package org.example;
 public class Employee {
     private final String lastName;
     private final String firstName;
+    // В поле Employee  добавлены новые поля «Зарплата» и «Отдел»
     private final int departmentId;
+    // В поле Employee  добавлены новые поля «Зарплата» и «Отдел»
     private final float salary;
     public Employee(String lastName, String firstName, int departmentId, float salary){
         this.firstName = firstName;
@@ -11,7 +13,7 @@ public class Employee {
         this.departmentId = departmentId;
         this.salary = salary;
     }
-
+    // конструктор для методов find и remove чтобы поиск сотрудников осуществлять только по ключу
     public Employee(String firstName, String lastName) {
         this.firstName = firstName;
         this.lastName = lastName;
@@ -24,12 +26,17 @@ public class Employee {
     public float getSalary(){
         return this.salary;
     }
-    public String toKey() {
-        return "firstName: " + firstName + " lastName: " + lastName + " ";
+    // метод используется скрытой функцией toString для вывода объекта
+    public String getFirstName(){
+        return this.firstName;
     }
-    @Override
-    public String toString() {
-        return this.toKey() + "departmentId: " + departmentId + " salary: " + salary;
+    // метод используется скрытой функцией toString для вывода объекта
+    public String getLastName(){
+        return this.lastName;
+    }
+    // метод генерации ключа для коллекции
+    public String toKey() {
+        return firstName + lastName;
     }
     @Override
     public int hashCode() {
