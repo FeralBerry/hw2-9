@@ -17,12 +17,12 @@ public class Departments {
     }
     // Переписаны контроллер и сервис, которые возвращают сотрудника с максимальной зарплатой на основе номера отдела, который приходит в запрос из браузера.
     @GetMapping("/max-salary")
-    public List<Object> maxSalary(@RequestParam(name = "departmentId") int departmentId) {
+    public List maxSalary(@RequestParam(name = "departmentId") int departmentId) {
         return departmentsService.maxSalary(departmentId);
     }
     // Переписаны контроллер и сервис, которые возвращают сотрудника с минимальной зарплатой на основе номера отдела.
     @GetMapping("/min-salary")
-    public List<Object> minSalary(@RequestParam(name = "departmentId") int departmentId) {
+    public List minSalary(@RequestParam(name = "departmentId") int departmentId) {
         return departmentsService.minSalary(departmentId);
     }
     // про такой вариант параметров не знал думал будет работать только с /{departmentId}

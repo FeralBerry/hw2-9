@@ -1,6 +1,8 @@
 package org.example;
 
 import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class Employee {
     private final String lastName;
@@ -8,7 +10,7 @@ public class Employee {
     // В поле Employee  добавлены новые поля «Зарплата» и «Отдел»
     private final int departmentId;
     // В поле Employee  добавлены новые поля «Зарплата» и «Отдел»
-    private final float salary;
+    private final double salary;
     public Employee(String lastName, String firstName, int departmentId, float salary){
         this.firstName = firstName;
         this.lastName = lastName;
@@ -25,7 +27,7 @@ public class Employee {
     public int getDepartment(){
         return this.departmentId;
     }
-    public float getSalary(){
+    public double getSalary(){
         return this.salary;
     }
     // метод используется скрытой функцией toString для вывода объекта
