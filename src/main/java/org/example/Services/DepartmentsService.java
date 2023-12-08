@@ -1,12 +1,8 @@
 package org.example.Services;
 
-import org.example.Employee;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.atomic.AtomicReference;
+import java.util.*;
 
 @Service
 public class DepartmentsService {
@@ -16,54 +12,103 @@ public class DepartmentsService {
     private DepartmentsService(EmployeeService employeeService) {
         this.employeeService = employeeService;
     }
-    private List<Object> findEmployee(Map<String, Employee> map, String keySearch){
-        List <Object> employee = new ArrayList<>();
-        // скрытый stream метод можно менять на .forEach на .stream().forEach работать будет и так и так
-        // Реализация проекта заменена через циклы на Stream API.
-        map.forEach((key, value) -> {
-            // при потоковом обходе проверяем ключ и если совпадает добавляем сотрудника в коллекцию
-            if(key.equals(keySearch)){
-                employee.add(value);
-            }
-        });
-        // возвращяем коллекцию с сотрудником
-        return employee;
-    }
-    // Переписаны контроллер и сервис, которые возвращают сотрудника с максимальной зарплатой на основе номера отдела, который приходит в запрос из браузера.
+    // Переписаны контроллер и сервис, которые возвращают сотрудника с максимальной зарплатой на основе номера отдела,
+    // который приходит в запрос из браузера.
     public List<Object> maxSalary(int departmentId) {
-        // защита для многопоточности AtomicReference
-        AtomicReference<Float> max = new AtomicReference<>((float) 0);
-        AtomicReference<String> keySearch = new AtomicReference<>("");
+        // 1 реализация без компаратора
+        // можно задавать float max, но при работе 2 и более людей могут быть ошибки
+        Float max = 0.0f;
+        List <Object> employee1 = new ArrayList<>();
         // скрытый stream метод можно менять на .forEach на .stream().forEach работать будет и так и так
         // Реализация проекта заменена через циклы на Stream API.
         employeeService.getEmployees().forEach((key, value) -> {
             // при потоковом обходе проверяем отдел и зарплату и на каждом проходе перезаписываем максимальную зарплату
             // сотрудника для следующего обхода и ключ массива для вывода если этот сотрудник окажется с максимальной зарплатой
-            if(value.getDepartment() == departmentId && value.getSalary() > max.get()){
-                max.set(value.getSalary());
-                keySearch.set(key);
+            if(value.getDepartment() == departmentId && value.getSalary() > max){
+                // если нашелся сотрудник с зарплатой выше пред идущего, то записываем его зарплату
+                max = value.getSalary();
             }
         });
-        // используем метод поиска сотрудника по ключу
-        return findEmployee(employeeService.getEmployees(),keySearch.get());
+        employeeService.getEmployees().forEach((key,value) -> {
+            if(value.getDepartment() == departmentId && value.getSalary() == max){
+                employee1.add(value);
+            }
+        });
+        // возвращение коллекции с сотрудниками, потому что может быть 1 сотрудник с одинаковой зарплатой
+        // return employee1;
+        // конец 1 реализации
+        // 2 реализация с компаратором
+        List <Float> employeeSalary = new ArrayList<>();
+        Comparator<Float> comparator = Comparator.comparing(Float::floatValue);
+        employeeService.getEmployees().forEach((key, value) -> {
+            if(value.getDepartment() == departmentId){
+                employeeSalary.add(value.getSalary());
+            }
+        });
+        Optional<Float> maxOptional = employeeSalary.stream().max(comparator);
+        List <Object> employee2 = new ArrayList<>();
+        // обход коллекции сотрудников потоковым методом
+        employeeService.getEmployees().forEach((key, value) -> {
+            // проверка на существование сотрудника
+            if(maxOptional.isPresent()){
+                // проверка на отдел и соответствие зарплаты максимальной
+                if(value.getDepartment() == departmentId && maxOptional.get() == value.getSalary()){
+                    // добавление сотрудника с соответствующими параметрами в коллекцию
+                    employee2.add(value);
+                }
+            }
+        });
+        // возвращение коллекции с сотрудниками, потому что может быть 1 сотрудник с одинаковой зарплатой
+        return employee2;
+        // конец 2 реализации
     }
     // Переписаны контроллер и сервис, которые возвращают сотрудника с минимальной зарплатой на основе номера отдела.
     public List<Object> minSalary(int departmentId) {
-        // защита для многопоточности AtomicReference
-        AtomicReference<Float> min = new AtomicReference<>((float) Integer.MAX_VALUE);
-        AtomicReference<String> keySearch = new AtomicReference<>("");
+        // 1 реализация без компаратора
+        // можно задавать float min, но при работе 2 и более людей могут быть ошибки
+        Float min = 0.0f;
+        List <Object> employee1 = new ArrayList<>();
         // скрытый stream метод можно менять на .forEach на .stream().forEach работать будет и так и так
         // Реализация проекта заменена через циклы на Stream API.
         employeeService.getEmployees().forEach((key, value) -> {
             // при потоковом обходе проверяем отдел и зарплату и на каждом проходе перезаписываем минимальную зарплату
-            // сотрудника для следующего обхода и ключ массива для вывода если этот сотрудник окажется с минимальной зарплатой
-            if(value.getDepartment() == departmentId && value.getSalary() < min.get()){
-                min.set(value.getSalary());
-                keySearch.set(key);
+            if(value.getDepartment() == departmentId && value.getSalary() > min){
+                // если нашелся сотрудник с зарплатой ниже, то записываем его зарплату
+                min = value.getSalary();
             }
         });
-        // используем метод поиска сотрудника по ключу
-        return findEmployee(employeeService.getEmployees(),keySearch.get());
+        employeeService.getEmployees().forEach((key,value) -> {
+            if(value.getDepartment() == departmentId && value.getSalary() == min){
+                employee1.add(value);
+            }
+        });
+        // возвращение коллекции с сотрудниками, потому что может быть 1 сотрудник с одинаковой зарплатой
+        // return employee1;
+        // конец 1 реализации
+        // 2 реализация с компаратором
+        List <Float> employeeSalary = new ArrayList<>();
+        Comparator<Float> comparator = Comparator.comparing(Float::floatValue);
+        employeeService.getEmployees().forEach((key, value) -> {
+            if(value.getDepartment() == departmentId){
+                employeeSalary.add(value.getSalary());
+            }
+        });
+        Optional<Float> minOptional = employeeSalary.stream().min(comparator);
+        List <Object> employee2 = new ArrayList<>();
+        // обход коллекции сотрудников потоковым методом
+        employeeService.getEmployees().forEach((key, value) -> {
+            // проверка на существование сотрудника
+            if(minOptional.isPresent()){
+                // проверка на отдел и соответствие минимальной зарплаты
+                if(value.getDepartment() == departmentId && minOptional.get() == value.getSalary()){
+                    // добавление сотрудника с соответствующими параметрами в коллекцию
+                    employee2.add(value);
+                }
+            }
+        });
+        // возвращение коллекции с сотрудниками, потому что может быть 1 сотрудник с одинаковой зарплатой
+        return employee2;
+        // конец 2 реализации
     }
     // Переписаны контроллер и сервис, которые возвращают всех сотрудников по отделу
     public List<Object> allForDepartments(int departmentId) {
