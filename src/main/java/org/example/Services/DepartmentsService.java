@@ -18,8 +18,9 @@ public class DepartmentsService {
     }
     // Переписаны контроллер и сервис, которые возвращают сотрудника с максимальной зарплатой на основе номера отдела,
     // который приходит в запрос из браузера.
+    /* 1 реализация без компаратора
     public List maxSalary(int departmentId) {
-        /*// 1 реализация без компаратора
+
         // можно задавать float max, но при работе 2 и более людей могут быть ошибки
         AtomicReference<Float> max = new AtomicReference<>(0.0f);
         List <Object> employee1 = new ArrayList<>();
@@ -35,9 +36,10 @@ public class DepartmentsService {
         });
         employee1 = findEmployeesForDepartment(employeeService.getEmployees(),max.get(),departmentId);
         // возвращение коллекции с сотрудниками, потому что может быть 1 сотрудник с одинаковой зарплатой
-        // return employee1;
-        // конец 1 реализации*/
-        /*// 2 реализация с компаратором
+        return employee1;
+    }*/
+    /* 2 реализация с компаратором
+    public List maxSalary(int departmentId) {
         List <Float> employeeSalary = new ArrayList<>();
         Comparator<Float> comparator = Comparator.comparing(Float::floatValue);
         employeeService.getEmployees().forEach((key, value) -> {
@@ -51,9 +53,10 @@ public class DepartmentsService {
         // обход коллекции сотрудников потоковым методом
         maxOptional.ifPresent(aFloat -> employee2.add(findEmployeesForDepartment(employeeService.getEmployees(),aFloat,departmentId)));
         // возвращение коллекции с сотрудниками, потому что может быть 1 сотрудник с одинаковой зарплатой
-        // return employee2;*/
-        // конец 2 реализации
-        // реализация 3 через стрим и компаратор, фильтр стрима возвращает объект сотрудника
+        // return employee2;
+    }*/
+    // реализация 3 через стрим и компаратор, фильтр стрима возвращает объект сотрудника
+    public List maxSalary(int departmentId) {
         return employeeService.getEmployees()
                 .entrySet()
                 .stream()
@@ -63,8 +66,8 @@ public class DepartmentsService {
                 .collect(Collectors.toList());
     }
     // Переписаны контроллер и сервис, которые возвращают сотрудника с минимальной зарплатой на основе номера отдела.
+    /* 1 реализация без компаратора
     public List minSalary(int departmentId) {
-        /*// 1 реализация без компаратора
         // можно задавать float min, но при работе 2 и более людей могут быть ошибки
         AtomicReference<Float> min = new AtomicReference<>(0.0f);
         List <Object> employee1 = new ArrayList<>();
@@ -79,9 +82,10 @@ public class DepartmentsService {
         });
         employee1 = findEmployeesForDepartment(employeeService.getEmployees(),min.get(),departmentId);
         // возвращение коллекции с сотрудниками, потому что может быть 1 сотрудник с одинаковой зарплатой
-        // return employee1;
-        // конец 1 реализации*/
-        /*// 2 реализация с компаратором
+        return employee1;
+    }*/
+    /* 2 реализация с компаратором
+    public List minSalary(int departmentId) {
         List <Float> employeeSalary = new ArrayList<>();
         Comparator<Float> comparator = Comparator.comparing(Float::floatValue);
         employeeService.getEmployees().forEach((key, value) -> {
@@ -95,9 +99,10 @@ public class DepartmentsService {
         // обход коллекции сотрудников потоковым методом
         minOptional.ifPresent(aFloat -> employee2.add(findEmployeesForDepartment(employeeService.getEmployees(),aFloat,departmentId)));
         // возвращение коллекции с сотрудниками, потому что может быть 1 сотрудник с одинаковой зарплатой
-        // return employee2;
-        // конец 2 реализации*/
-        // реализация 3 через стрим и компаратор возвращает объект сотрудника
+        return employee2;
+    }*/
+    // реализация 3 через стрим и компаратор возвращает объект сотрудника
+    public List minSalary(int departmentId) {
         return employeeService.getEmployees()
                 .entrySet()
                 .stream()
@@ -107,8 +112,8 @@ public class DepartmentsService {
                 .collect(Collectors.toList());
     }
     // Переписаны контроллер и сервис, которые возвращают всех сотрудников по отделу
+    /* реализация 1
     public List<Object> allForDepartments(int departmentId) {
-        /*// реализация 1
         // Объявляем пустую коллекцию
         List <Object> employee = new ArrayList<>();
         // скрытый stream метод можно менять на .forEach на .stream().forEach работать будет и так и так
@@ -122,7 +127,9 @@ public class DepartmentsService {
             }
         });
         // Возвращаем коллекцию всех сотрудников в 1 отделе
-        // return employee;*/
+         return employee;
+    }*/
+    public List<Object> allForDepartments(int departmentId) {
         // реализация 2
         // во 2 реализации есть проблема с фильтрацией по данным, если будет 2 ячейка с подобными данными,
         // но не в том столбце данные так же прейдут
@@ -133,23 +140,25 @@ public class DepartmentsService {
                 .collect(Collectors.toList());
     }
     // Переписаны контроллер и сервис, которые возвращают всех сотрудников с разделением по отделам.
+    /* 1 вариант вывода c ключами
     public List<Object> all() {
-        // 1 вариант сохранение всех в коллекцию для вывода без ключей
+        return employeeService.getEmployees();
+    }*/
+    public List<Object> all() {
+        // 2 вариант сохранение всех в коллекцию для вывода без ключей
         List <Object> employee = new ArrayList<>();
         // скрытый stream метод можно менять на .forEach на .stream().forEach работать будет и так и так
         // 1 строчная лямбда поэтому без {} обходим коллекцию и на каждом потоковом проходе добавляем в
         // коллекцию employee сотрудника
         // Реализация проекта заменена через циклы на Stream API.
         employeeService.getEmployees().forEach((key, value) ->
-            employee.add(value)
+                employee.add(value)
         );
         // Возвращаем коллекцию всех сотрудников
         return employee;
-        // 2 вариант вывода c ключами
-        // return employeeService.getEmployees();
-
     }
-    /*private List<Object> findEmployeesForDepartment(Map<String, Employee> employeeService, float keySearch,int departmentId){
+    /* метод для реализации 1 и 2 максимальной и минимальной зарплаты
+    private List<Object> findEmployeesForDepartment(Map<String, Employee> employeeService, float keySearch,int departmentId){
         List<Object> findEmployees = new ArrayList<>();
         employeeService.forEach((key, value) -> {
             // проверка на отдел и соответствие минимальной зарплаты

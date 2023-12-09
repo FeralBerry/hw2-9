@@ -27,9 +27,15 @@ public class Employee {
     public int getDepartment(){
         return this.departmentId;
     }
+    // 3 реализация
     public double getSalary(){
         return this.salary;
     }
+    /* 1 и 2 реализация
+    public float getSalary(){
+        return this.salary;
+    }
+     */
     // метод используется скрытой функцией toString для вывода объекта
     public String getFirstName(){
         return this.firstName;
